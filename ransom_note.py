@@ -1,13 +1,30 @@
 def can_construct(ransomNote: str, magazine: str) -> bool:
     """
-    Determines if ransomNote can be constructed using letters from magazine.
-    Each letter in magazine can only be used once.
+    Return True if ransomNote can be built from the letters in magazine,
+    using each magazine letter at most once. Matching is case-sensitive.
 
-    Parameters:
-        ransomNote (str): The target string to construct.
-        magazine (str): The source string with available characters.
+    Approach:
+      1. Count every character in the magazine in a hash table (dict).
+      2. For each character in the note, spend one from that table.
+      3. If a character is missing or its count is 0, return False early.
 
-    Returns:
-        bool: True if ransomNote can be constructed, False otherwise.
+    Time:  O(m + n), because dict lookups and updates are O(1) on average.
+    Space: O(k), where k is the number of distinct characters in magazine.
     """
-    pass  # TODO: Implement this function
+    # A note longer than the magazine can never be built
+    if len(ransomNote) > len(magazine):
+        return False
+
+    # Hash table of available letters: {character: how many are left}
+    available = {}
+    for char in magazine:
+        available[char] = available.get(char, 0) + 1
+
+    for char in ransomNote:
+        # Missing or already used up: the note can't be built
+        if available.get(char, 0) == 0:
+            return False
+        # Use one copy of this letter
+        available[char] -= 1
+
+    return True
